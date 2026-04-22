@@ -22,7 +22,6 @@ public class QuantityMeasurementApp {
         }
     }
 
-    // Quantity class
     static class Quantity {
         private final double value;
         private final LengthUnit unit;
@@ -42,24 +41,33 @@ public class QuantityMeasurementApp {
             return unit.toFeet(value);
         }
 
-        // ✅ UC6: Addition (instance method)
+        // 🔹 UC6 method (default → first operand unit)
         public Quantity add(Quantity other) {
+            return add(other, this.unit);
+        }
+
+        // 🔹 UC7 method (explicit target unit)
+        public Quantity add(Quantity other, LengthUnit targetUnit) {
+
             if (other == null) {
                 throw new IllegalArgumentException("Other quantity cannot be null");
             }
+            if (targetUnit == null) {
+                throw new IllegalArgumentException("Target unit cannot be null");
+            }
 
-            // Convert both to base unit
+            // Convert both to base unit (feet)
             double sumFeet = this.toFeet() + other.toFeet();
 
-            // Convert back to unit of first operand
-            double resultValue = this.unit.fromFeet(sumFeet);
+            // Convert to target unit
+            double resultValue = targetUnit.fromFeet(sumFeet);
 
-            return new Quantity(resultValue, this.unit);
+            return new Quantity(resultValue, targetUnit);
         }
 
-        // Optional static method
-        public static Quantity add(Quantity q1, Quantity q2) {
-            return q1.add(q2);
+        // Optional static version
+        public static Quantity add(Quantity q1, Quantity q2, LengthUnit targetUnit) {
+            return q1.add(q2, targetUnit);
         }
 
         @Override
@@ -77,22 +85,19 @@ public class QuantityMeasurementApp {
         }
     }
 
-    // Main method
+    // Demo
     public static void main(String[] args) {
 
         System.out.println(new Quantity(1.0, LengthUnit.FEET)
-                .add(new Quantity(2.0, LengthUnit.FEET))); // 3 FEET
+                .add(new Quantity(12.0, LengthUnit.INCH), LengthUnit.FEET));
 
         System.out.println(new Quantity(1.0, LengthUnit.FEET)
-                .add(new Quantity(12.0, LengthUnit.INCH))); // 2 FEET
+                .add(new Quantity(12.0, LengthUnit.INCH), LengthUnit.INCH));
 
-        System.out.println(new Quantity(12.0, LengthUnit.INCH)
-                .add(new Quantity(1.0, LengthUnit.FEET))); // 24 INCH
+        System.out.println(new Quantity(1.0, LengthUnit.FEET)
+                .add(new Quantity(12.0, LengthUnit.INCH), LengthUnit.YARD));
 
-        System.out.println(new Quantity(1.0, LengthUnit.YARD)
-                .add(new Quantity(3.0, LengthUnit.FEET))); // 2 YARD
-
-        System.out.println(new Quantity(2.54, LengthUnit.CENTIMETER)
-                .add(new Quantity(1.0, LengthUnit.INCH))); // ~5.08 CM
+        System.out.println(new Quantity(36.0, LengthUnit.INCH)
+                .add(new Quantity(1.0, LengthUnit.YARD), LengthUnit.FEET));
     }
 }
