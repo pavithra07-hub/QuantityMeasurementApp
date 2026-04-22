@@ -1,20 +1,19 @@
-public enum LengthUnit {
-    FEET(1.0),
-    INCHES(1.0 / 12.0),
-    YARDS(3.0),
-    CENTIMETERS(1.0 / 30.48);
+public class QuantityMeasurementApp {
+    public static void main(String[] args) {
 
-    private final double toFeetFactor;
+        QuantityWeight w1 = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
+        QuantityWeight w2 = new QuantityWeight(1000.0, WeightUnit.GRAM);
 
-    LengthUnit(double toFeetFactor) {
-        this.toFeetFactor = toFeetFactor;
-    }
+        // Equality
+        System.out.println("Equal? " + w1.equals(w2));
 
-    public double convertToBaseUnit(double value) {
-        return value * toFeetFactor; // → feet
-    }
+        // Conversion
+        System.out.println("1 kg to pounds: " + w1.convertTo(WeightUnit.POUND));
 
-    public double convertFromBaseUnit(double baseValue) {
-        return baseValue / toFeetFactor;
+        // Addition
+        System.out.println("Add (kg): " + w1.add(w2));
+
+        // Addition with target unit
+        System.out.println("Add (grams): " + w1.add(w2, WeightUnit.GRAM));
     }
 }
